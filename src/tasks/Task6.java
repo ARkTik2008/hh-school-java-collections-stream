@@ -5,11 +5,15 @@ import common.Person;
 import common.Task;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /*
 Имеются
@@ -21,9 +25,34 @@ import java.util.Set;
 public class Task6 implements Task {
 
   private Set<String> getPersonDescriptions(Collection<Person> persons,
-                                            Map<Integer, Set<Integer>> personAreaIds,
-                                            Collection<Area> areas) {
-    return new HashSet<>();
+      Map<Integer, Set<Integer>> personAreaIds,
+      Collection<Area> areas) {
+
+    Set<String> result = new HashSet<>();
+    Set<List<Integer>> personAreaRelation = new HashSet<>();
+
+    //Создаю список связи personID -- areaId.
+    for (Map.Entry<Integer, Set<Integer>> entry : personAreaIds.entrySet()) {
+      entry.getValue().forEach(e -> personAreaRelation.add(List.of(entry.getKey(), e)));
+    }
+
+    //Пробегаю по списку связей. По каждому personId ищу имя, по areaId - регион
+    for (List<Integer> it : personAreaRelation) {
+      var personId = it.get(0);
+      var areaId = it.get(1);
+
+      String name = persons.stream()
+          .filter(p -> p.getId() == personId)
+          .map(Person::getFirstName)
+          .findFirst().get();
+      String region = areas.stream()
+          .filter(p -> p.getId() == areaId)
+          .map(Area::getName).findFirst()
+          .get();
+
+      result.add(name + " - " + region);
+    }
+    return result;
   }
 
   @Override

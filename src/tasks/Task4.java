@@ -19,7 +19,9 @@ public class Task4 implements Task {
 
   // !!! Редактируйте этот метод !!!
   private List<ApiPersonDto> convert(List<Person> persons) {
-    return new ArrayList<>();
+    List<ApiPersonDto> personsDto = new ArrayList<>();
+    persons.forEach(person -> personsDto.add(convert(person)));
+    return personsDto;
   }
 
   private static ApiPersonDto convert(Person person) {
