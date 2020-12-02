@@ -3,12 +3,8 @@ package tasks;
 import common.Person;
 import common.PersonService;
 import common.Task;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /*
@@ -28,13 +24,18 @@ The implementation was adapted from Tim Peters's list sort for Python ( TimSort)
 */
 
 public class Task1 implements Task {
+
   // !!! Редактируйте этот метод !!!
   private List<Person> findOrderedPersons(List<Integer> personIds) {
-    Set<Person> persons = PersonService.findPersons(personIds);
-    List<Person> personsList = new ArrayList<>(persons);
-    personsList.sort(Comparator.comparing(v -> personIds.indexOf(v.getId())));
+//    Set<Person> persons = PersonService.findPersons(personIds);
+//    List<Person> personsList = new ArrayList<>(persons);
+//    personsList.sort(Comparator.comparing(v -> personIds.indexOf(v.getId())));
+//    return personsList;
 
-    return personsList;
+    return personIds.stream().map(List::of)
+        .map(PersonService::findPersons)
+        .flatMap(Collection::stream)
+        .collect(Collectors.toList());
   }
 
   @Override
