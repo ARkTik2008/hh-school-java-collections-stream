@@ -33,31 +33,28 @@ public class Task8 implements Task {
 
   //меняем на инициализацию через конструктор хэшсета
   //Изменил название метода - getDifferentNames не очень говорящее.
-  public Set<String> getNamesOfPersons(List<Person> persons) {
+  public Set<String> getDifferentNames(List<Person> persons) {
     return new HashSet<>(getNames(persons));
   }
 
   //Упростил через String join + поправил багулину с отчеством - возвращалась фамилия
   public String convertPersonToString(Person person) {
-    return String.join(" ", person.getSecondName(), person.getFirstName(), person.getMiddleName());
+    return Stream.of(person.getSecondName(), person.getFirstName(), person.getMiddleName())
+        .collect(Collectors.joining(" "));
   }
 
   //упростил через стримы
   public Map<Integer, String> getPersonNames(Collection<Person> persons) {
-    return persons.stream()
-        .collect(Collectors.toMap(Person::getId, this::convertPersonToString));
+
+    Map<Integer, String> map = new HashMap<>();
+    persons.forEach(person -> map.putIfAbsent(person.getId(), convertPersonToString(person)));
+    return map;
+    //return persons.stream().collect(Collectors.toMap(Person::getId, this::convertPersonToString));
   }
 
   //изменил итерацию по элементам на более наглядную
   public boolean hasSamePersons(Collection<Person> persons1, Collection<Person> persons2) {
-    boolean has = false;
-    for (Person person1 : persons1) {
-      has = persons2.stream().anyMatch(p -> p.equals(person1));
-      if (has) {
-        break;
-      }
-    }
-    return has;
+    return persons2.stream().anyMatch(persons1::contains);
   }
 
   //без лишних перемнных и инкрементов возвращается сразу же результат

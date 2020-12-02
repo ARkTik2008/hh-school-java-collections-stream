@@ -2,9 +2,7 @@ package tasks;
 
 import common.Person;
 import common.Task;
-
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -25,8 +23,8 @@ public class Task2 implements Task {
       Collection<Person> persons2,
       int limit) {
 
-    return Stream
-        .concat(persons1.stream(), persons2.stream())
+    //Исправил форматирование
+    return Stream.concat(persons1.stream(), persons2.stream())
         .sorted(Comparator.comparing(Person::getCreatedAt))
         .limit(limit)
         .collect(Collectors.toList());

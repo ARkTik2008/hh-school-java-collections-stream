@@ -3,11 +3,10 @@ package tasks;
 import common.ApiPersonDto;
 import common.Person;
 import common.Task;
-
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /*
 Задача 5
@@ -21,9 +20,11 @@ public class Task5 implements Task {
   // !!! Редактируйте этот метод !!!
   private List<ApiPersonDto> convert(List<Person> persons, Map<Integer, Integer> personAreaIds) {
 
-    List<ApiPersonDto> personsDto = new ArrayList<>();
-    persons.forEach(person -> personsDto.add(convert(person, personAreaIds.get(person.getId()))));
-    return personsDto;
+//    List<ApiPersonDto> personsDto = new ArrayList<>();
+//    persons.forEach(person -> personsDto.add(convert(person, personAreaIds.get(person.getId()))));
+    return persons.stream().map(it -> convert(it, personAreaIds.get(it.getId())))
+        .collect(Collectors.toList());
+    //return personsDto;
   }
 
   private static ApiPersonDto convert(Person person, Integer areaId) {

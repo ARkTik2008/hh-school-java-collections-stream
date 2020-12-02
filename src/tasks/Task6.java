@@ -28,31 +28,35 @@ public class Task6 implements Task {
       Map<Integer, Set<Integer>> personAreaIds,
       Collection<Area> areas) {
 
-    Set<String> result = new HashSet<>();
-    Set<List<Integer>> personAreaRelation = new HashSet<>();
+    Set<Map<Integer, Integer>> personAreaRelation = new HashSet<>();
+    ArrayList<Integer> personsIds = new ArrayList<>();
+    ArrayList<Integer> areaIds = new ArrayList<>();
 
     //Создаю список связи personID -- areaId.
     for (Map.Entry<Integer, Set<Integer>> entry : personAreaIds.entrySet()) {
-      entry.getValue().forEach(e -> personAreaRelation.add(List.of(entry.getKey(), e)));
+      entry.getValue().forEach(e -> personAreaRelation.add(Map.of(entry.getKey(), e)));
     }
 
     //Пробегаю по списку связей. По каждому personId ищу имя, по areaId - регион
-    for (List<Integer> it : personAreaRelation) {
-      var personId = it.get(0);
-      var areaId = it.get(1);
-
-      String name = persons.stream()
-          .filter(p -> p.getId() == personId)
-          .map(Person::getFirstName)
-          .findFirst().get();
-      String region = areas.stream()
-          .filter(p -> p.getId() == areaId)
-          .map(Area::getName).findFirst()
-          .get();
-
-      result.add(name + " - " + region);
+    for (Map<Integer, Integer> it : personAreaRelation) {
+      for (Map.Entry<Integer, Integer> entry : it.entrySet()) {
+        personsIds.add(entry.getKey());
+        areaIds.add(entry.getValue());
+      }
     }
-    return result;
+
+    List<String> personsNames = personsIds.stream()
+        .map(id -> persons.stream().filter(p -> p.getId().equals(id)).findFirst().get()
+            .getFirstName())
+        .collect(Collectors.toList());
+
+    List<String> areaNames = areaIds.stream()
+        .map(id -> areas.stream().filter(p -> p.getId().equals(id)).findFirst().get().getName())
+        .collect(Collectors.toList());
+
+    return Stream.iterate(0, i -> i + 1).limit(personsNames.size())
+        .map(i -> String.join(" - ", personsNames.get(i), areaNames.get(i)))
+        .collect(Collectors.toSet());
   }
 
   @Override
